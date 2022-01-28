@@ -2,9 +2,9 @@
   "name": "challenge-digital-back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./src/api/server.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "nodemon .",
     "start": "npm run build && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -19,6 +19,7 @@
     "typescript": "^4.5.5"
   },
   "dependencies": {
+    "dotenv": "^14.3.2",
     "express": "^4.17.2"
   }
 }
