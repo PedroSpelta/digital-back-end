@@ -18,15 +18,22 @@ const getCompleteUser = (user: IUserReq) => ({
 const create = async (user: IUserReq) => {
   const userValidate = userSchema.validate(user);
   if (userValidate.error)
-    throw 'eae'
+    throw {
+      status: StatusCodes.EXPECTATION_FAILED,
+      message: 'Name or cpf invalid',
+    };
 
   const userExists = await userModels.find(user);
   if (userExists)
-    throw 'test'
+    throw {
+      status: StatusCodes.EXPECTATION_FAILED,
+      message: 'Name or cpf already registered',
+    };
 
   const completeUser = getCompleteUser(user);
-  const created = userModels.create(completeUser);
-  return true;
+  const created = await userModels.create(completeUser);
+  if (created.acknowledged) return true;
+  throw 'Internal Error';
 };
 
 export default { create };
