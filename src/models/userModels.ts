@@ -1,4 +1,6 @@
+import { Document } from 'mongodb';
 import { connectToDatabase } from './connection';
+import mongoModels from './mongoModels';
 
 const createUser = async (user: any) => {
   const conn = await connectToDatabase();
@@ -7,7 +9,7 @@ const createUser = async (user: any) => {
   return createResult;
 };
 
-const findUser = async (cpf: string) => {
+const findByCpf = async (cpf: string) => {
   const conn = await connectToDatabase();
   const coll = conn.collection('user');
   const findResult = await coll.find({cpf});
@@ -29,4 +31,13 @@ const findAndUpdateCounter = async () => {
   return counterResult;
 };
 
-export default { createUser, findUser,findAndUpdateCounter };
+interface IFindAccount {
+  (account: string) : Document | null;
+}
+
+const findByAccount:IFindAccount = async (account) => {
+  const findResult = await mongoModels.findOne({account},'user');
+  return findResult;
+}
+
+export default { createUser, findByCpf,findAndUpdateCounter,findByAccount };

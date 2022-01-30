@@ -15,4 +15,14 @@ const create: IExpressController = async (req, res, next) => {
   }
 };
 
-export default { create };
+const login: IExpressController = async (req, res, next) => {
+  try{
+    const {account, password} = req.body;
+    const loginResponse = await userServices.login({account, password});
+    return res.send('login');
+  } catch (err) {
+    next(err);
+  }
+}
+
+export default { create, login };

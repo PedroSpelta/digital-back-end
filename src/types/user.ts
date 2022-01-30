@@ -3,3 +3,8 @@ export interface IUserReq {
   cpf: string;
   password: string;
 };
+
+export interface ILoginReq {
+  account: string;
+  password: string;
+}

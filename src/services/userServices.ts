@@ -1,7 +1,8 @@
 import userModels from '../models/userModels';
 import Joi from 'joi';
-import { IUserReq } from '../types/user';
+import { ILoginReq, IUserReq } from '../types/user';
 import { StatusCodes } from 'http-status-codes';
+import userErrors from '../errors/userErrors';
 
 const userSchema = Joi.object({
   name: Joi.string().required(),
@@ -36,11 +37,11 @@ const create = async (user: IUserReq) => {
       message: 'Name or cpf invalid',
     };
 
-  const userExists = await userModels.findUser(user.cpf);
+  const userExists = await userModels.findByCpf(user.cpf);
   if (userExists)
     throw {
       status: StatusCodes.EXPECTATION_FAILED,
-      message: 'Name or cpf already registered',
+      message: 'Cpf already have an account',
     };
 
   const completeUser = await getCompleteUser(user);
@@ -49,4 +50,11 @@ const create = async (user: IUserReq) => {
   throw 'Internal Error';
 };
 
-export default { create };
+const login = async (user: ILoginReq) => {
+  const foundUser = await userModels.findByAccount(user.account);
+  if(!foundUser || foundUser.password !== user.password) {    
+    throw userErrors.wrongCredentials;
+  }
+};
+
+export default { create, login };
