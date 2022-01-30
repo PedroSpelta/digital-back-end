@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 const userSchema = Joi.object({
   name: Joi.string().required(),
   cpf: Joi.string().min(11).max(14).required(),
+  password: Joi.string().length(6).required(),
 });
 
 const initialWallet = 0;
@@ -21,9 +22,9 @@ const getAccountNumber = async () => {
 const getCompleteUser = async (user: IUserReq) => {
   const accountNumber = await getAccountNumber();
   return {
+    account: accountNumber,
     ...user,
     wallet: initialWallet,
-    account: accountNumber,
   };
 };
 
@@ -35,7 +36,7 @@ const create = async (user: IUserReq) => {
       message: 'Name or cpf invalid',
     };
 
-  const userExists = await userModels.findUser(user);
+  const userExists = await userModels.findUser(user.cpf);
   if (userExists)
     throw {
       status: StatusCodes.EXPECTATION_FAILED,

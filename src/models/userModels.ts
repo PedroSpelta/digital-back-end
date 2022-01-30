@@ -7,10 +7,10 @@ const createUser = async (user: any) => {
   return createResult;
 };
 
-const findUser = async (user: any) => {
+const findUser = async (cpf: string) => {
   const conn = await connectToDatabase();
   const coll = conn.collection('user');
-  const findResult = await coll.find(user);
+  const findResult = await coll.find({cpf});
   const findArray = await findResult.toArray();
 
   if (findArray.length === 0) return false;
