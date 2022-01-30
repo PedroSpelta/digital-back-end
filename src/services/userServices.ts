@@ -10,10 +10,22 @@ const userSchema = Joi.object({
 
 const initialWallet = 0;
 
-const getCompleteUser = (user: IUserReq) => ({
-  ...user,
-  wallet: initialWallet,
-});
+const getAccountNumber = async () => {
+  const mongoNumberFind = await userModels.findAndUpdateCounter();
+  const absoluteNumber = mongoNumberFind.value?.counter;
+  const maskedNumber = `00000${absoluteNumber}`.slice(-5);
+
+  return maskedNumber;
+};
+
+const getCompleteUser = async (user: IUserReq) => {
+  const accountNumber = await getAccountNumber();
+  return {
+    ...user,
+    wallet: initialWallet,
+    account: accountNumber,
+  };
+};
 
 const create = async (user: IUserReq) => {
   const userValidate = userSchema.validate(user);
@@ -23,15 +35,15 @@ const create = async (user: IUserReq) => {
       message: 'Name or cpf invalid',
     };
 
-  const userExists = await userModels.find(user);
+  const userExists = await userModels.findUser(user);
   if (userExists)
     throw {
       status: StatusCodes.EXPECTATION_FAILED,
       message: 'Name or cpf already registered',
     };
 
-  const completeUser = getCompleteUser(user);
-  const created = await userModels.create(completeUser);
+  const completeUser = await getCompleteUser(user);
+  const created = await userModels.createUser(completeUser);
   if (created.acknowledged) return true;
   throw 'Internal Error';
 };
