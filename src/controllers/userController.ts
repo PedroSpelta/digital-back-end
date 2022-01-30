@@ -19,7 +19,7 @@ const login: IExpressController = async (req, res, next) => {
   try{
     const {account, password} = req.body;
     const loginResponse = await userServices.login({account, password});
-    return res.send('login');
+    return res.status(StatusCodes.OK).json({token:loginResponse})
   } catch (err) {
     next(err);
   }

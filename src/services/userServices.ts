@@ -1,14 +1,9 @@
 import userModels from '../models/userModels';
-import Joi from 'joi';
 import { ILoginReq, IUserReq } from '../types/user';
 import { StatusCodes } from 'http-status-codes';
 import userErrors from '../errors/userErrors';
-
-const userSchema = Joi.object({
-  name: Joi.string().required(),
-  cpf: Joi.string().min(11).max(14).required(),
-  password: Joi.string().length(6).required(),
-});
+import { loginAuth, userAuth } from '../lib/inputAuth';
+import { generateToken } from '../auth/token';
 
 const initialWallet = 0;
 
@@ -30,7 +25,7 @@ const getCompleteUser = async (user: IUserReq) => {
 };
 
 const create = async (user: IUserReq) => {
-  const userValidate = userSchema.validate(user);
+  const userValidate = userAuth(user);
   if (userValidate.error)
     throw {
       status: StatusCodes.EXPECTATION_FAILED,
@@ -51,10 +46,20 @@ const create = async (user: IUserReq) => {
 };
 
 const login = async (user: ILoginReq) => {
+  //validate entries
+  const loginValidate = loginAuth(user);
+  if (loginValidate.error)
+    throw userErrors.invalidFormat;
+
+  //validate user exists in the db
   const foundUser = await userModels.findByAccount(user.account);
   if(!foundUser || foundUser.password !== user.password) {    
     throw userErrors.wrongCredentials;
   }
+
+  //get the user token
+  const token = generateToken(user);
+  return token;
 };
 
 export default { create, login };
