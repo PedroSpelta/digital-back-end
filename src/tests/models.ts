@@ -11,27 +11,38 @@ import getConnection from './mongo';
 // import { getConnection } from './mongo';
 
 describe('Testing user model', async () => {
-  let connectionMock:MongoClient;
+  let connectionMock: MongoClient;
   before(async () => {
     connectionMock = await getConnection();
+    // await connectionMock
+    //   .db('digital')
+    //   .collection('user')
+    //   .insertOne({ name: 'pedro' });
+    // sinon.stub(MongoClient, 'connect').returns(console.log('stubi'));
 
     sinon.stub(MongoClient, 'connect').resolves(connectionMock);
   });
 
   after(async () => {
+    // const a = await connectionMock.db('digital').collection('user').find({});
+    // const b = await a.toArray();
+    // console.log(b);
     // await connectionMock.db('digital').collection('user').drop();
   });
 
   describe('Testing user model create user', () => {
     describe('Correct data introduced', () => {
       it('Should return the user', async () => {
-        const test = await userModels.createUser({});
-        console.log(test);
-        expect({}).to.be.empty;
+        const createResponse = await userModels.createUser({ name: 'maria' });
+        const a = await connectionMock
+          .db('digital')
+          .collection('user')
+          .find({});
+        const b = await a.toArray();
+        console.log(b);
+        expect(createResponse.acknowledged).to.be.equal(true);
       });
-      it('Should create the user', async () => {
-
-      })
+      it('Should create the user', async () => {});
     });
   });
 });

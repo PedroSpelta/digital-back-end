@@ -1,14 +1,15 @@
-import {MongoClient} from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 require('dotenv').config();
 
+const { MONGO_DB_STRING, MONGO_DB_NAME } = process.env;
+
+let db: Db | null = null;
+
 export async function connectToDatabase() {
-  const { MONGO_DB_STRING, MONGO_DB_NAME } = process.env;
-
-  const client: MongoClient = new MongoClient(
-    MONGO_DB_STRING as string
-  );
-
-  await client.connect();
-
-  return client.db(MONGO_DB_NAME);
+  return db
+    ? Promise.resolve(db)
+    : MongoClient.connect(MONGO_DB_STRING as string).then((conn) => {
+        db = conn.db(`${MONGO_DB_NAME}`);
+        return db;
+      });
 }
