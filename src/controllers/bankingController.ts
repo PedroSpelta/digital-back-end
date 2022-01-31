@@ -5,20 +5,22 @@ import { StatusCodes } from 'http-status-codes';
 
 const deposit: IExpressController = async (req, res, next) => {
   try {
+    //getting request data
     const { quantity } = req.body;
     const token = req.headers.authorization;
 
     //check token existence
     if (!token) throw bankingErrors.missingToken;
 
-    const { done, account } = await bankingServices.deposit({
+    //making deposit to the db
+    const { account } = await bankingServices.deposit({
       quantity,
       token,
     });
-    if (done)
-      return res.status(StatusCodes.OK).json({
-        message: `Successfully deposited R$${quantity} on account #${account}`,
-      });
+    
+    return res.status(StatusCodes.OK).json({
+      message: `Successfully deposited R$${quantity} on account #${account}`,
+    });
   } catch (err) {
     next(err);
   }
@@ -38,11 +40,10 @@ const transfer: IExpressController = async (req, res, next) => {
       quantity,
       token,
     });
-    return res
-      .status(StatusCodes.OK)
-      .json({
-        message: `Account #${senderAccount} successfully transferred R$${quantity} to account #${transferAccount}`,
-      });
+
+    return res.status(StatusCodes.OK).json({
+      message: `Account #${senderAccount} successfully transferred R$${quantity} to account #${transferAccount}`,
+    });
   } catch (err) {
     next(err);
   }
