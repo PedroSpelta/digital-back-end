@@ -1,4 +1,5 @@
 import { Document, Filter } from 'mongodb';
+import { connectToDatabase } from './connection';
 import mongoModels from './mongoModels';
 
 const findByAccount = async (account: string) => {
@@ -6,7 +7,7 @@ const findByAccount = async (account: string) => {
   return foundResponse;
 };
 
-const updateOne = async (filter: Filter<Document>, query: Filter<Document>) => {
+const updateOne = async (filter: Filter<Document>, query: Filter<Document>) => {  
   const updateResponse = await mongoModels.updateOne(filter, query, 'user');
   return updateResponse;
 };

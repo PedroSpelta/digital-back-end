@@ -14,6 +14,7 @@ const updateOne = async (
   collection: string
 ) => {
   const conn = await connectToDatabase();
+  
   const coll = conn.collection(collection);
   const updateResult = coll.updateOne(filter, query);
   return updateResult;

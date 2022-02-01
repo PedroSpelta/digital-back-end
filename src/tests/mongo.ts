@@ -1,10 +1,10 @@
 import { ConnectOptions, MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
+const mongo = MongoMemoryServer.create();
 
 const getConnection = async () => {
-  const mongo =  await MongoMemoryServer.create();
-  const mockUri = mongo.getUri();
+  const mockUri = (await mongo).getUri();
   const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
