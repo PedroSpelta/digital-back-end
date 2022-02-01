@@ -128,26 +128,15 @@ describe('Testing models', async () => {
   });
 
   describe('Testing banking models', () => {
-    console.log();
-
     describe('Testing update one', () => {
-      afterEach(async () => {
-        // await connectionMock.db('digital').collection('user').drop();
-      });
+      afterEach(async () => {});
 
       it('Should update using a filter and a query', async () => {
-        // const createResponse = await userModels.createUser({ ...userCreate2 });
-        // console.log(
-        //   await connectionMock.db('digital').collection('user').findOne({})
-        // );
-        // const createResponse = await userModels.createUser(userCreate1);
-        // console.log(await connectionMock.db('digital').collection('user').findOne({}));
-        // await connectionMock.db('digital').collection('user').insertOne({...userDb1});
-        // await connectionMock.db('digital').collection('user').insertOne({...userDb1});
-        // const {modifiedCount} = await bankingModels.updateOne({...userDb1},{$inc:{wallet:100}});
-        // const findUser = await connectionMock.db('digital').collection('user').findOne({name:'Pedro'})
-        // expect(modifiedCount).to.be.equal(1);
-        // expect(findUser?.wallet).to.be.equal(100);
+        await connectionMock.db('digital').collection('user').insertOne({...userDb1});
+        const {modifiedCount} = await bankingModels.updateOne({...userDb1},{$inc:{wallet:100}});
+        const findUser = await connectionMock.db('digital').collection('user').findOne({name:'Pedro'})
+        expect(modifiedCount).to.be.equal(1);
+        expect(findUser?.wallet).to.be.equal(100);
       });
     });
   });
