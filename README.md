@@ -18,9 +18,16 @@ The objetive was to build an API REST that could:
 
 ## Preview
 
-Preview the example live on Heroku;
-Make a POST request to https://spelta-digital-challenge.herokuapp.com/user/create;
-Preview is running a db on MongoAtlas
+Preview the example live on Heroku.  
+Make a POST request to https://spelta-digital-challenge.herokuapp.com/user/create with the following Body:
+```
+{
+  "name": "Your name here",
+  "cpf": "111.222.333-04",
+  "password": "123456",
+}
+```
+Preview is running a db on MongoAtlas.  
 
 ## Instalation and Setup Instructions
 
