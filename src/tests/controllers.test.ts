@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { afterEach } from 'mocha';
 import Sinon from 'sinon';
 import userController from '../controllers/userController';
 import userErrors from '../errors/userErrors';
@@ -39,6 +40,7 @@ describe('Testing controllers', () => {
     json.returns();
     status.returns(res);
   });
+  
   describe('Testing user controllers', () => {
     describe('Testing create', () => {
       describe.only('Testing correct input', () => {
@@ -58,23 +60,16 @@ describe('Testing controllers', () => {
 
         it('Should express response with json with user info', async () => {
           await userController.create(req, res, next);
-          console.log({ ...createdUser1 });
           expect(res.json.calledWith({ ...createdUser1 })).to.be.true;
         });
       });
 
-      describe('Testing incorrect input', () => {
-        let next: any;
-        let req: any = {};
-        let res: any;
-
+      describe.only('Testing incorrect input', () => {
         before(() => {
-          next = Sinon.stub();
           req.body = {
             ...createdUser1,
             user: { ...createdUser1.user, password: '123' },
           };
-          next.returns();
         });
 
         after(() => {
@@ -91,24 +86,12 @@ describe('Testing controllers', () => {
     });
 
     describe('Testing login', () => {
-      describe('Testing correct input', () => {
-        let status, json;
-        let req: any = {};
-        let res: any;
-        let next: any;
-
+      describe.only('Testing correct input', () => {
         before(() => {
-          status = Sinon.stub();
-          json = Sinon.spy();
-          res = { status, json };
-          next = Sinon.stub();
-
           req.body = {
             account: '00001',
             password: '123456',
           };
-
-          status.returns(res);
           Sinon.stub(userServices, 'login').resolves(mockToken.token);
         });
 
@@ -127,27 +110,19 @@ describe('Testing controllers', () => {
         });
       });
 
-      describe('Testing incorrect input', () => {
-        let req: any = {};
-        let res: any;
-        let next: any;
-
+      describe.only('Testing incorrect input', () => {
         before(() => {
-          next = Sinon.stub();
-
           req.body = {
             account: '00001',
             password: '1234567',
           };
-
-          next.returns();
         });
 
         after(() => {
           Sinon.restore();
         });
 
-        it('Should call function next', async () => {
+        it('Should receive wrong input and return to the function next', async () => {
           await userController.login(req, res, next);
           expect(next.calledWith(userErrors.invalidFormat)).to.be.true;
         });
