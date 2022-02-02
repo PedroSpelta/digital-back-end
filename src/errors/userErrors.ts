@@ -10,6 +10,10 @@ const userErrors = {
     message:
       'Invalid format. Account is a string of 5 digits and password is a string of 6 digits.',
   },
+  invalidInput: {
+    status: StatusCodes.EXPECTATION_FAILED,
+    message: 'Name or cpf invalid',
+  },
 };
 
 export default userErrors;

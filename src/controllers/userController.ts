@@ -6,11 +6,14 @@ const create: IExpressController = async (req, res, next) => {
   try {
     const user = req.body;
     const createResponse = await userServices.create(user);
+    
+    const response = { message: 'User created successfully', user }
+    
     if (createResponse)
       return res
         .status(StatusCodes.CREATED)
-        .json({ message: 'User created successfully', user });
-  } catch (err) {
+        .json(response);
+  } catch (err) {    
     next(err);
   }
 };

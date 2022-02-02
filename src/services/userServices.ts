@@ -26,11 +26,8 @@ const getCompleteUser = async (user: IUserReq) => {
 
 const create = async (user: IUserReq) => {
   const userValidate = userAuth(user);
-  if (userValidate.error)
-    throw {
-      status: StatusCodes.EXPECTATION_FAILED,
-      message: 'Name or cpf invalid',
-    };
+
+  if (userValidate.error) throw userErrors.invalidInput;
 
   const userExists = await userModels.findByCpf(user.cpf);
   if (userExists)
@@ -48,12 +45,11 @@ const create = async (user: IUserReq) => {
 const login = async (user: ILoginReq) => {
   //validate entries
   const loginValidate = loginAuth(user);
-  if (loginValidate.error)
-    throw userErrors.invalidFormat;
+  if (loginValidate.error) throw userErrors.invalidFormat;
 
   //validate user exists in the db
   const foundUser = await userModels.findByAccount(user.account);
-  if(!foundUser || foundUser.password !== user.password) {    
+  if (!foundUser || foundUser.password !== user.password) {
     throw userErrors.wrongCredentials;
   }
 
