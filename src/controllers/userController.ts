@@ -7,7 +7,7 @@ const create: IExpressController = async (req, res, next) => {
     const user = req.body;
     const createResponse = await userServices.create(user);
     
-    const response = { message: 'User created successfully', user }
+    const response = { message: 'User created successfully', user }    
     
     if (createResponse)
       return res

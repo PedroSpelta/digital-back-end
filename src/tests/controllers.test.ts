@@ -25,24 +25,25 @@ const mockToken = {
 };
 
 describe('Testing controllers', () => {
+  let status:any;
+  let json:any;
+  let req: any = {};
+  let res: any;
+  let next: any;
+  beforeEach(() => {
+    status = Sinon.stub();
+    json = Sinon.stub();
+    next = Sinon.stub();
+    res = { status, json };
+    next.returns();
+    json.returns();
+    status.returns(res);
+  });
   describe('Testing user controllers', () => {
     describe('Testing create', () => {
-      describe('Testing correct input', () => {
-        let status, json;
-        let req: any = {};
-        let res: any;
-        let next: any;
-
+      describe.only('Testing correct input', () => {
         before(() => {
-          status = Sinon.stub();
-          json = Sinon.spy();
-          res = { status, json };
-          next = Sinon.stub();
-
           req.body = userCreate1;
-
-          next.returns();
-          status.returns(res);
           Sinon.stub(userServices, 'create').resolves(true);
         });
 
@@ -50,9 +51,14 @@ describe('Testing controllers', () => {
           Sinon.restore();
         });
 
-        it('Should return 201 and the user', async () => {
-          const response = await userController.create(req, res, next);
+        it('Should express response with status 200', async () => {
+          await userController.create(req, res, next);
           expect(res.status.calledWith(201)).to.be.true;
+        });
+
+        it('Should express response with json with user info', async () => {
+          await userController.create(req, res, next);
+          console.log({ ...createdUser1 });
           expect(res.json.calledWith({ ...createdUser1 })).to.be.true;
         });
       });
@@ -141,12 +147,19 @@ describe('Testing controllers', () => {
           Sinon.restore();
         });
 
-        it("Should call function next", async () => {
-          await userController.login(req,res,next);
+        it('Should call function next', async () => {
+          await userController.login(req, res, next);
           expect(next.calledWith(userErrors.invalidFormat)).to.be.true;
-        })
+        });
       });
-      
+    });
+  });
+
+  describe('Testing banking controllers', () => {
+    describe('Testing deposit', () => {
+      describe('Testing correct input', () => {
+        it('Should return express response with status 200');
+      });
     });
   });
 });
