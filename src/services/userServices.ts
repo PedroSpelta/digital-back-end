@@ -31,10 +31,7 @@ const create = async (user: IUserReq) => {
 
   const userExists = await userModels.findByCpf(user.cpf);
   if (userExists)
-    throw {
-      status: StatusCodes.EXPECTATION_FAILED,
-      message: 'Cpf already have an account',
-    };
+    throw userErrors.alreadyRegistered;
 
   const completeUser = await getCompleteUser(user);
   const created = await userModels.createUser(completeUser);

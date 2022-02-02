@@ -14,6 +14,10 @@ const userErrors = {
     status: StatusCodes.EXPECTATION_FAILED,
     message: 'Name or cpf invalid',
   },
+  alreadyRegistered: {
+    status: StatusCodes.EXPECTATION_FAILED,
+    message: 'Cpf already have an account',
+  },
 };
 
 export default userErrors;
