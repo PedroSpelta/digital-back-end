@@ -1,8 +1,10 @@
 import { expect } from 'chai';
-import { afterEach } from 'mocha';
 import Sinon from 'sinon';
+import bankingController from '../controllers/bankingController';
 import userController from '../controllers/userController';
+import bankingErrors from '../errors/bankingErrors';
 import userErrors from '../errors/userErrors';
+import bankingServices from '../services/bankingServices';
 import userServices from '../services/userServices';
 
 const userCreate1 = {
@@ -26,9 +28,12 @@ const mockToken = {
 };
 
 describe('Testing controllers', () => {
-  let status:any;
-  let json:any;
-  let req: any = {};
+  let status: any;
+  let json: any;
+  let authorization: any;
+  let headers: any = { authorization };
+  let body: any;
+  let req: any = { headers, body };
   let res: any;
   let next: any;
   beforeEach(() => {
@@ -40,10 +45,10 @@ describe('Testing controllers', () => {
     json.returns();
     status.returns(res);
   });
-  
+
   describe('Testing user controllers', () => {
     describe('Testing create', () => {
-      describe.only('Testing correct input', () => {
+      describe('Testing correct input', () => {
         before(() => {
           req.body = userCreate1;
           Sinon.stub(userServices, 'create').resolves(true);
@@ -64,7 +69,7 @@ describe('Testing controllers', () => {
         });
       });
 
-      describe.only('Testing incorrect input', () => {
+      describe('Testing incorrect input', () => {
         before(() => {
           req.body = {
             ...createdUser1,
@@ -86,7 +91,7 @@ describe('Testing controllers', () => {
     });
 
     describe('Testing login', () => {
-      describe.only('Testing correct input', () => {
+      describe('Testing correct input', () => {
         before(() => {
           req.body = {
             account: '00001',
@@ -110,7 +115,7 @@ describe('Testing controllers', () => {
         });
       });
 
-      describe.only('Testing incorrect input', () => {
+      describe('Testing incorrect input', () => {
         before(() => {
           req.body = {
             account: '00001',
@@ -133,7 +138,48 @@ describe('Testing controllers', () => {
   describe('Testing banking controllers', () => {
     describe('Testing deposit', () => {
       describe('Testing correct input', () => {
-        it('Should return express response with status 200');
+        before(() => {
+          req.body = { quantity: 1000 };
+          req.headers.authorization = { token: mockToken.token };
+          Sinon.stub(bankingServices, 'deposit').resolves({
+            done: true,
+            account: '00001',
+          });
+        });
+        after(() => {
+          Sinon.restore();
+        });
+        it('Should return express response with status 200', async () => {
+          await bankingController.deposit(req, res, next);
+          expect(res.status.calledWith(200)).to.be.true;
+        });
+        it('Should express response with json token', async () => {
+          await bankingController.deposit(req, res, next);
+          expect(
+            res.json.calledWith({
+              message: `Successfully deposited R$1000 on account #00001`,
+            })
+          ).to.be.true;
+        });
+      });
+
+      describe('Testing incorrect input', () => {
+        before(() => {
+          req.body = { quantity: 1000 };
+        });
+        after(() => {
+          Sinon.restore();
+        });
+        it('Should receive wrong input and return to the function next', async () => {
+          req.headers.authorization = undefined;
+          await bankingController.deposit(req, res, next);
+          expect(next.calledWith(bankingErrors.missingToken)).to.be.true;
+        });
+        it('Should receive wrong input and return to the function next', async () => {
+          req.headers.authorization = '';
+          await bankingController.deposit(req, res, next);
+          expect(next.calledWith(bankingErrors.missingToken)).to.be.true;
+        });
       });
     });
   });

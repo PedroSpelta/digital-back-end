@@ -22,6 +22,7 @@ const deposit: IExpressController = async (req, res, next) => {
       message: `Successfully deposited R$${quantity} on account #${account}`,
     });
   } catch (err) {
+    // console.log(err);
     next(err);
   }
 };
