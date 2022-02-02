@@ -16,3 +16,8 @@ export const validateToken = (token: string) => {
 
   return { ...data };
 };
+
+export default {
+  generateToken,
+  validateToken,
+};

@@ -2,7 +2,7 @@ import { IDepositReq, ITransferReq } from '../types/transfer';
 import bankingErrors from '../errors/bankingErrors';
 
 import bankingModels from '../models/bankingModels';
-import { validateToken } from '../auth/token';
+import jwtToken from '../auth/token';
 import { string } from 'joi';
 
 const validateQuantity = (quantity: number) => {
@@ -12,7 +12,7 @@ const validateQuantity = (quantity: number) => {
 
 const deposit = async ({ quantity, token }: IDepositReq) => {
   //validate token
-  const { data: user } = validateToken(token);
+  const { data: user } = jwtToken.validateToken(token);
 
   //validate quantity
   validateQuantity(quantity);

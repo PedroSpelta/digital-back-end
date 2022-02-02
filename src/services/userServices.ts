@@ -3,7 +3,7 @@ import { ILoginReq, IUserReq } from '../types/user';
 import { StatusCodes } from 'http-status-codes';
 import userErrors from '../errors/userErrors';
 import { loginAuth, userAuth } from '../lib/inputAuth';
-import { generateToken } from '../auth/token';
+import jwtToken from '../auth/token';
 
 const initialWallet = 0;
 
@@ -51,7 +51,7 @@ const login = async (user: ILoginReq) => {
   }
 
   //get the user token
-  const token = generateToken(user);
+  const token = jwtToken.generateToken(user);
   return token;
 };
 
