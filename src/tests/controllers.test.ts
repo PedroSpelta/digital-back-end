@@ -182,5 +182,51 @@ describe('Testing controllers', () => {
         });
       });
     });
+
+    describe('Testing transfer', () => {
+      describe('Testing correct input', () => {
+        before(() => {
+          req.body = { quantity: 1000, transferAccount: '00002' };
+          req.headers.authorization = mockToken.token;
+          Sinon.stub(bankingServices, 'transfer').resolves({
+            senderAccount: '00001',
+          });
+        });
+        after(() => {
+          Sinon.restore();
+        });
+        it('Should return express response with status 200', async () => {
+          await bankingController.transfer(req, res, next);
+          expect(res.status.calledWith(200)).to.be.true;
+        });
+        it('Should express response with transfer message', async () => {
+          await bankingController.transfer(req, res, next);
+          expect(
+            res.json.calledWith({
+              message: `Account #00001 successfully transferred R$1000 to account #00002`,
+            })
+          ).to.be.true;
+        });
+      });
+
+      describe('Testing incorrect input', () => {
+        before(() => {
+          req.body = { quantity: -1000, transferAccount: '00002' };
+        });
+        after(() => {
+          Sinon.restore();
+        });
+        it('Should receive wrong input and return to the function next', async () => {
+          req.headers.authorization = undefined;
+          await bankingController.transfer(req, res, next);
+          expect(next.calledWith(bankingErrors.missingToken)).to.be.true;
+        });
+        it('Should receive wrong input and return to the function next', async () => {
+          req.headers.authorization = mockToken.token;
+          await bankingController.transfer(req, res, next);
+          expect(next.calledWith(bankingErrors.invalidQuantity)).to.be.true;
+        });
+      });
+    });
   });
 });

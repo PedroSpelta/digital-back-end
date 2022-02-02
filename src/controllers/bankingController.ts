@@ -17,12 +17,11 @@ const deposit: IExpressController = async (req, res, next) => {
       quantity,
       token,
     });
-    
+
     return res.status(StatusCodes.OK).json({
       message: `Successfully deposited R$${quantity} on account #${account}`,
     });
   } catch (err) {
-    // console.log(err);
     next(err);
   }
 };
