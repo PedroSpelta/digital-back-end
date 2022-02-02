@@ -18,7 +18,9 @@ The objetive was to build an API REST that could:
 
 ## Preview
 
-Preview the example live on [Heroku](https://spotify.spelta.dev/):
+Preview the example live on Heroku;
+Make a POST request to https://spelta-digital-challenge.herokuapp.com/user/create;
+Preview is running a db on MongoAtlas
 
 ## Instalation and Setup Instructions
 
