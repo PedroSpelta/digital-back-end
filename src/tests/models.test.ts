@@ -132,11 +132,31 @@ describe('Testing models', async () => {
       afterEach(async () => {});
 
       it('Should update using a filter and a query', async () => {
-        await connectionMock.db('digital').collection('user').insertOne({...userDb1});
-        const {modifiedCount} = await bankingModels.updateOne({...userDb1},{$inc:{wallet:100}});
-        const findUser = await connectionMock.db('digital').collection('user').findOne({name:'Pedro'})
+        await connectionMock
+          .db('digital')
+          .collection('user')
+          .insertOne({ ...userDb1 });
+        const { modifiedCount } = await bankingModels.updateOne(
+          { ...userDb1 },
+          { $inc: { wallet: 100 } }
+        );
+        const findUser = await connectionMock
+          .db('digital')
+          .collection('user')
+          .findOne({ name: 'Pedro' });
         expect(modifiedCount).to.be.equal(1);
         expect(findUser?.wallet).to.be.equal(100);
+      });
+    });
+
+    describe('Testing find by account', () => {
+      it('Should return a user', async () => {
+        await connectionMock
+          .db('digital')
+          .collection('user')
+          .insertOne({ ...userDb1 });
+        const response = await bankingModels.findByAccount('00001');
+        expect(response).to.contain({ ...userDb1 });
       });
     });
   });

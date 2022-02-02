@@ -1,28 +1,9 @@
 import userModels from '../models/userModels';
 import { ILoginReq, IUserReq } from '../types/user';
-import { StatusCodes } from 'http-status-codes';
 import userErrors from '../errors/userErrors';
 import { loginAuth, userAuth } from '../lib/inputAuth';
 import jwtToken from '../auth/token';
-
-const initialWallet = 0;
-
-const getAccountNumber = async () => {
-  const mongoNumberFind = await userModels.findAndUpdateCounter();
-  const absoluteNumber = mongoNumberFind.value?.counter;
-  const maskedNumber = `00000${absoluteNumber}`.slice(-5);
-
-  return maskedNumber;
-};
-
-const getCompleteUser = async (user: IUserReq) => {
-  const accountNumber = await getAccountNumber();
-  return {
-    account: accountNumber,
-    ...user,
-    wallet: initialWallet,
-  };
-};
+import { getCompleteUser } from '../lib/userUtils';
 
 const create = async (user: IUserReq) => {
   const userValidate = userAuth(user);

@@ -3,7 +3,7 @@ import { connectToDatabase } from './connection';
 import mongoModels from './mongoModels';
 
 const findByAccount = async (account: string) => {
-  const foundResponse = await mongoModels.findOne({ account }, 'user');
+  const foundResponse = await mongoModels.findOne({ account }, 'user');  
   return foundResponse;
 };
 

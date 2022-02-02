@@ -13,13 +13,12 @@ export const generateToken = (user: ILoginReq) => {
 };
 
 export const validateToken = (token: string) => {
-  try{
+  try {
     const data = verify(token, JWT_SECRET) as JwtPayload;
     return { ...data };
-  } catch (err){
+  } catch (err) {
     throw bankingErrors.invalidToken;
   }
-
 };
 
 export default {

@@ -37,8 +37,8 @@ const transfer = async ({ transferAccount, quantity, token }: ITransferReq) => {
   validateQuantity(quantity);
 
   //validate sender has enough in wallet
-  const senderData = await bankingModels.findByAccount(sender.account);
-  if (senderData?.wallet < quantity) throw bankingErrors.notEnoughTransfer;
+  const senderData = await bankingModels.findByAccount(sender.account) as any;
+  if (senderData.wallet < quantity) throw bankingErrors.notEnoughTransfer;
 
   // create query to update wallet value
   const filterReceiver = { account: transferAccount };
@@ -56,7 +56,7 @@ const transfer = async ({ transferAccount, quantity, token }: ITransferReq) => {
     querySender
   );
 
-  return { senderAccount: senderData?.account };
+  return { senderAccount: senderData.account };
 };
 
 export default { deposit, transfer };
