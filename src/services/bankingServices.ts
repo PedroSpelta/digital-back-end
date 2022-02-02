@@ -3,7 +3,6 @@ import bankingErrors from '../errors/bankingErrors';
 
 import bankingModels from '../models/bankingModels';
 import jwtToken from '../auth/token';
-import { string } from 'joi';
 
 const validateQuantity = (quantity: number) => {
   if (quantity > 2000 || quantity < 0 || typeof quantity === 'string')
@@ -32,7 +31,7 @@ const deposit = async ({ quantity, token }: IDepositReq) => {
 
 const transfer = async ({ transferAccount, quantity, token }: ITransferReq) => {
   //validate token
-  const { data: sender } = validateToken(token);
+  const { data: sender } = jwtToken.validateToken(token);
 
   //validate quantity
   validateQuantity(quantity);
@@ -44,7 +43,7 @@ const transfer = async ({ transferAccount, quantity, token }: ITransferReq) => {
   // create query to update wallet value
   const filterReceiver = { account: transferAccount };
   const queryReceiver = { $inc: { wallet: quantity } };
-  const updateReceiverResponse = await bankingModels.updateOne(
+  await bankingModels.updateOne(
     filterReceiver,
     queryReceiver
   );
@@ -52,7 +51,7 @@ const transfer = async ({ transferAccount, quantity, token }: ITransferReq) => {
   //create query to update sender wallet value
   const filterSender = { account: sender.account };
   const querySender = { $inc: { wallet: -quantity } };
-  const updateSenderResponse = await bankingModels.updateOne(
+  await bankingModels.updateOne(
     filterSender,
     querySender
   );

@@ -1,4 +1,5 @@
 import { Algorithm, JwtPayload, sign, verify } from 'jsonwebtoken';
+import bankingErrors from '../errors/bankingErrors';
 import { ILoginReq } from '../types/user';
 
 const jwtConfig = {
@@ -12,9 +13,13 @@ export const generateToken = (user: ILoginReq) => {
 };
 
 export const validateToken = (token: string) => {
-  const data = verify(token, JWT_SECRET) as JwtPayload;
+  try{
+    const data = verify(token, JWT_SECRET) as JwtPayload;
+    return { ...data };
+  } catch (err){
+    throw bankingErrors.invalidToken;
+  }
 
-  return { ...data };
 };
 
 export default {

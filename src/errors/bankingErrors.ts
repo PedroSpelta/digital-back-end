@@ -20,6 +20,11 @@ const bankingErrors = {
     message:
       'Your account do not have enough money on wallet to make the transference.',
   },
+  invalidToken:{
+    status: StatusCodes.BAD_REQUEST,
+    message:
+      'Invalid token. You need to be log in to receive a valid token.',
+  }
 };
 
 export default bankingErrors;

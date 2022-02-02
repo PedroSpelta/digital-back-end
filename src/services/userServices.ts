@@ -34,9 +34,8 @@ const create = async (user: IUserReq) => {
     throw userErrors.alreadyRegistered;
 
   const completeUser = await getCompleteUser(user);
-  const created = await userModels.createUser(completeUser);
-  if (created.acknowledged) return true;
-  throw 'Internal Error';
+  await userModels.createUser(completeUser);
+  return true;
 };
 
 const login = async (user: ILoginReq) => {
